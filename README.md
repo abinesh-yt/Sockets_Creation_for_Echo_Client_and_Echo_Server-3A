@@ -10,30 +10,77 @@ Sockets Links.
 4. Send and receive the message using the send function in socket.
 ## PROGRAM
 
-Developed by : **KABELAN G K**
+Developed by : **Abinesh A**
 
-Reg no : **212224110027**
+Reg no : **212225240002**
 
 ### Client 
 ```python
 import socket
-s=socket.socket()
-s.connect(('localhost',8001))
+
+# Create socket object
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Connect to server
+host = '127.0.0.1'
+port = 5000
+
+client_socket.connect((host, port))
+
 while True:
-    msg=input("Client > ")
-    s.send(msg.encode())
-    print("Server > ",s.recv(1024).decode())
+    # Input message
+    message = input("Enter message: ")
+
+    # Send message to server
+    client_socket.send(message.encode())
+
+    if message.lower() == 'exit':
+        break
+
+    # Receive echoed message
+    data = client_socket.recv(1024).decode()
+    print("Server echoed:", data)
+
+# Close socket
+client_socket.close()
+
 ```
 ### Server
 ```python
 import socket
-s=socket.socket()
-s.bind(('localhost',8001))
-s.listen(5)
-c,addr=s.accept()
+
+# Create socket object
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Bind the socket with host and port
+host = '127.0.0.1'
+port = 5000
+server_socket.bind((host, port))
+
+# Listen for incoming connections
+server_socket.listen(1)
+
+print("Echo Server is waiting for connection...")
+
+# Accept client connection
+client_socket, addr = server_socket.accept()
+print("Connected to:", addr)
+
 while True:
-    ClientMessage=c.recv(1024).decode()
-    c.send(ClientMessage.encode())
+    # Receive message from client
+    data = client_socket.recv(1024).decode()
+
+    if not data:
+        break
+
+    print("Client:", data)
+
+    # Send same message back to client
+    client_socket.send(data.encode())
+
+# Close sockets
+client_socket.close()
+server_socket.close()
 ```
 ## OUPUT
 Refer to the following screenshot to view the output of the program.
